@@ -8,11 +8,10 @@ import {
 
 const searchform = document.querySelector('.form');
 const gallery = document.querySelector('.gallery');
-const loader = document.querySelector('.loader');
 
 searchform.addEventListener('submit', toSearch);
 
-function toSearch(event) {
+async function toSearch(event) {
   event.preventDefault();
 
   showLoadingIndicator();
@@ -24,15 +23,17 @@ function toSearch(event) {
     return;
   }
 
-  fetchImages(inputValue)
-    .then(hits => {
-      if (!hits.length) {
-        showErrorMessage(
-          'Sorry, there are no images matching your search query. Please try again!'
-        );
-      }
-      hideLoadingIndicator();
-      createMarkup(hits, gallery);
-    })
-    .catch(error => console.log(error));
+  try {
+    const hits = await fetchImages(inputValue);
+    if (!hits.length) {
+      showErrorMessage(
+        'Sorry, there are no images matching your search query. Please try again!'
+      );
+    }
+    createMarkup(hits, gallery);
+  } catch (error) {
+    showErrorMessage('Failed to load images. Please try again!');
+  } finally {
+    hideLoadingIndicator();
+  }
 }
