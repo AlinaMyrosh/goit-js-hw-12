@@ -27,10 +27,6 @@ async function toSearch(event) {
 
   clearGallery(gallery);
 
-  showLoadingIndicator();
-
-  page = 1;
-
   const inputValue = event.target.elements['search-text'].value.trim();
   searchQuery = inputValue;
 
@@ -38,6 +34,10 @@ async function toSearch(event) {
     showErrorMessage('You forgot important data');
     return;
   }
+
+  page = 1;
+
+  showLoadingIndicator();
 
   try {
     const { hits, totalHits } = await fetchImages(inputValue, page);
